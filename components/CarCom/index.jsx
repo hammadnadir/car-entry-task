@@ -27,9 +27,7 @@ function CarForm() {
       const imageUrls = await uploadImagesToFirebase(imageList);
 
       const formData = { ...values, images: imageUrls };
-      console.log("formData, session", formData, session);
       dispatch(addCarEntryRequest({ formData, session })).then((res) => {
-        console.log("res",res?.payload?._id)
         if (res?.payload?._id) {
             form.resetFields();
             setImageList([]);
@@ -65,7 +63,6 @@ function CarForm() {
         const downloadURL = await getDownloadURL(snapshot.ref);
         urls.push(downloadURL);
       }
-      console.log("urls", urls);
       return urls;
     } catch (error) {
       console.error("Error uploading images to Firebase:", error);
