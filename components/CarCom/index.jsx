@@ -57,11 +57,6 @@ function CarForm() {
   const handleImageChange = ({ fileList }) => {
     setImageList(fileList);
   };
-
-  useEffect(() => {
-    console.log("form", form);
-  }, [form]);
-
   const uploadImagesToFirebase = async (images) => {
     const urls = [];
     try {
@@ -74,7 +69,6 @@ function CarForm() {
         const downloadURL = await getDownloadURL(snapshot.ref);
         urls.push(downloadURL);
       }
-      console.log("urls", urls);
       return urls;
     } catch (error) {
       console.error("Error uploading images to Firebase:", error);
