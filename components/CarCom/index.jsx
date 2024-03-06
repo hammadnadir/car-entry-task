@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Upload, Select, Typography, Radio  } from "antd";
+import { Button, Form, Input, Upload, Select, Typography, Radio } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -13,7 +13,6 @@ import { useSession } from "next-auth/react";
 const { Option } = Select;
 const { Text } = Typography;
 
-
 function CarForm() {
   const [form] = Form.useForm();
   const [imageList, setImageList] = useState([]);
@@ -24,36 +23,32 @@ function CarForm() {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-  
-      // Upload images to Firebase and get their URLs
+
       const imageUrls = await uploadImagesToFirebase(imageList);
-  
-      // Include image URLs in the form data
+
       const formData = { ...values, images: imageUrls };
-  console.log("formData, session",formData, session)
-      // Dispatch Redux action to add car entry
-      dispatch(addCarEntryRequest({ formData, session })).then((res)=>{
-
-          form.resetFields();
-          setImageList([]);
-          // Show success message
-          toast.success("Form submitted successfully!");
-      })
-
+      console.log("formData, session", formData, session);
+      dispatch(addCarEntryRequest({ formData, session })).then((res) => {
+        console.log("res",res?.payload?._id)
+        if (res?.payload?._id) {
+            form.resetFields();
+            setImageList([]);
+            toast.success("Form submitted successfully!");
+        } else {
+            toast.error("Something went wrong!");
+        }
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response && error.response.data) {
-        // If the error is from the API response
         alert(error.response.data.message || "Failed to submit the form.");
       } else {
-        // If the error is from other sources
         alert("Failed to submit the form. Please try again later.");
       }
     } finally {
-      setLoading(false); // Ensure loading state is set to false regardless of success or failure
+      setLoading(false); 
     }
   };
-  
 
   const handleImageChange = ({ fileList }) => {
     setImageList(fileList);
@@ -81,7 +76,6 @@ function CarForm() {
   return (
     <div className="car-form form-container">
       {" "}
-      {/* Container with styling */}
       {loading && <LoaderScreen />}
       <Form
         form={form}
