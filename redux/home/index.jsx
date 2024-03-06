@@ -13,13 +13,13 @@ const initialState = {
 
 export const addCarEntryRequest = createAsyncThunk(
   "home/addCarEntryRequest",
-  async ({ payload, session }, thunkAPI) => {
+  async ({ formData, session }, thunkAPI) => {
     try {
       const token = session?.user?.token ? session?.user?.token : "";
       let response;
       thunkAPI.dispatch(setLoading(true));
       response = await axios
-        .post(`${baseURL}post`, payload, {
+        .post(`${baseURL}post`, formData, {
           headers: {
             authorization: `Bearer ${token}`,
           },
