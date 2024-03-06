@@ -9,23 +9,23 @@ const HomePage = () => {
   return <CarCom />;
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  store => async ({ req, res }) => {
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   store => async ({ req, res }) => {
 
-    const session = await getSession({ req });
-    if (!session?.user?.token) {
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
+//     const session = await getSession({ req });
+//     if (!session?.user?.token) {
+//       return {
+//         redirect: {
+//           destination: "/login",
+//           permanent: false,
+//         },
+//       };
+//     }
 
-    return {
-      props: {},
-    };
-  }
-);
+//     return {
+//       props: {},
+//     };
+//   }
+// );
 
 export default HomePage;

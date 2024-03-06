@@ -1,35 +1,58 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Upload, Select, Typography } from "antd";
+import { Button, Form, Input, Upload, Select, Typography, Radio  } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "@/firebase";
 import LoaderScreen from "../loaderScreen";
+import { useDispatch } from "react-redux";
+import { addCarEntryRequest } from "@/redux/home";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
 
 const { Option } = Select;
 const { Text } = Typography;
+
 
 function CarForm() {
   const [form] = Form.useForm();
   const [imageList, setImageList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+  const { data: session } = useSession();
 
   const onFinish = async (values) => {
     try {
       setLoading(true);
-      const imageUrls = await uploadImagesToFirebase(imageList); // Upload images to Firebase and get their URLs
-      const formData = { ...values, images: imageUrls }; // Include image URLs in the form data
-      // Now you can submit formData to your API endpoint
-      setLoading(false);
+  
+      // Upload images to Firebase and get their URLs
+      const imageUrls = await uploadImagesToFirebase(imageList);
+  
+      // Include image URLs in the form data
+      const formData = { ...values, images: imageUrls };
+  
+      // Dispatch Redux action to add car entry
+      await dispatch(addCarEntryRequest({ formData, session }));
+  
+      // Reset form and image list
       form.resetFields();
       setImageList([]);
-      alert("Form submitted successfully!");
+      // Show success message
+      toast.success("Form submitted successfully!");
     } catch (error) {
       console.error("Error submitting form:", error);
-      setLoading(false);
-      alert("Failed to submit the form. Please try again later.");
+      if (error.response && error.response.data) {
+        // If the error is from the API response
+        alert(error.response.data.message || "Failed to submit the form.");
+      } else {
+        // If the error is from other sources
+        alert("Failed to submit the form. Please try again later.");
+      }
+    } finally {
+      setLoading(false); // Ensure loading state is set to false regardless of success or failure
     }
   };
+  
 
   const handleImageChange = ({ fileList }) => {
     setImageList(fileList);
@@ -60,16 +83,18 @@ function CarForm() {
   };
 
   return (
-    <div className="car-form form-container"> {/* Container with styling */}
-    {loading && <LoaderScreen />}
+    <div className="car-form form-container">
+      {" "}
+      {/* Container with styling */}
+      {loading && <LoaderScreen />}
       <Form
         form={form}
         onFinish={onFinish}
         layout="vertical"
-        initialValues={{ maxPictures: 1 }}
+        initialValues={{ copies: 1 }}
       >
         <Form.Item
-          name="carModel"
+          name="model"
           label="Car Model"
           rules={[
             {
@@ -101,7 +126,7 @@ function CarForm() {
         </Form.Item>
 
         <Form.Item
-          name="phoneNumber"
+          name="phone"
           label="Phone Number"
           rules={[
             {
@@ -115,7 +140,22 @@ function CarForm() {
           <Input placeholder="Phone Number" />
         </Form.Item>
         <Form.Item
-          name="maxPictures"
+          name="city"
+          label="City"
+          rules={[
+            {
+              required: true,
+              message: "Please select a city!",
+            },
+          ]}
+        >
+          <Radio.Group>
+            <Radio value="lahore">Lahore</Radio>
+            <Radio value="karachi">Karachi</Radio>
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          name="copies"
           label="Max Number of Pictures"
           rules={[
             {

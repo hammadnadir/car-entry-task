@@ -7,79 +7,59 @@ import useLoadingToast from "@/hooks/useLoadingToast";
 import { useSession } from "next-auth/react";
 
 const initialState = {
+  carData: {},
   isLoading: false,
 };
 
-// export const chatDataConvertRequest = createAsyncThunk(
-//   "home/chatDataConvertRequest",
-//   async ({ payload, session }, thunkAPI) => {
-//     try {
-//       // const { data: session } = useSession();
-//       const token = session?.user?.token ? session?.user?.token : "";
-//       let response;
-//       thunkAPI.dispatch(setLoading(true));
-//       response = await axios
-//         .post(
-//           `${baseURL}extract-image-data`,
-//           { url: payload },
-//           {
-//             headers: {
-//               Authorization: `Bearer ${token}`, // Include the bearer token in the request headers
-//             },
-//           }
-//         )
-//         .then((response) => response.data);
-//       thunkAPI.dispatch(setLoading(false));
-//       return response;
-//     } catch (error) {
-//       // console.log("Error", error);
-//     }
-//   }
-// );
+export const addCarEntryRequest = createAsyncThunk(
+  "home/addCarEntryRequest",
+  async ({ payload, session }, thunkAPI) => {
+    try {
+      const token = session?.user?.token ? session?.user?.token : "";
+      let response;
+      thunkAPI.dispatch(setLoading(true));
+      response = await axios
+        .post(
+          `${baseURL}post`,
+          { payload },
+          {
+            headers: {
+              authorization: `Bearer ${token}`
+            },
+          }
+        )
+        .then((response) => response.data);
+      thunkAPI.dispatch(setLoading(false));
+      return response;
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }
+);
 
 const homeSlice = createSlice({
   name: "home",
   initialState,
   reducers: {
-    setInputData: (state, action) => {
-      state.inputData = action.payload;
-    },
-    setEditData: (state, action) => {
-      state.editData = action.payload;
-    },
-    setAiDisable: (state, action) => {
-      state.aiDisable = action.payload;
-    },
-    setEditaiDisable: (state, action) => {
-      state.aiEditDisable = action.payload;
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(HYDRATE, (state, action) => {
-      // state.chatgptData = action?.payload?.home?.chatgptData
-      //   ? action.payload.home.chatgptData
-      //   : state?.chatgptData;
+      state.carData = action?.payload?.home?.carData
+        ? action.payload.home.carData
+        : state?.carData;
     });
 
-    // builder.addCase(chatDataConvertRequest.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(chatDataConvertRequest.fulfilled, (state, action) => {
-    //   state.chatgptData = action.payload;
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(chatDataConvertRequest.rejected, (state, action) => {
-    //   state.isLoading = false;
-    //   // console.log("Error:", { message: action.payload.message });
-    // });
+    builder.addCase(addCarEntryRequest.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(addCarEntryRequest.fulfilled, (state, action) => {
+      state.carData = action.payload;
+      state.isLoading = false;
+    });
+    builder.addCase(addCarEntryRequest.rejected, (state, action) => {
+      state.isLoading = false;
+    });
   },
 });
-
-export const {
-  // setInputData,
-  // setEditData,
-  // setAiDisable,
-  // setEditaiDisable,
-} = homeSlice.actions;
 
 export default homeSlice.reducer;
