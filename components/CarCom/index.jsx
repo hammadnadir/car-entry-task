@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Input, Upload, Select, Typography, Radio  } from "antd";
+import { Button, Form, Input, Upload, Select, Typography, Radio } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { v4 as uuidv4 } from "uuid";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -13,7 +13,6 @@ import { useSession } from "next-auth/react";
 const { Option } = Select;
 const { Text } = Typography;
 
-
 function CarForm() {
   const [form] = Form.useForm();
   const [imageList, setImageList] = useState([]);
@@ -24,21 +23,22 @@ function CarForm() {
   const onFinish = async (values) => {
     try {
       setLoading(true);
-  
+
       // Upload images to Firebase and get their URLs
       const imageUrls = await uploadImagesToFirebase(imageList);
-  
+
       // Include image URLs in the form data
       const formData = { ...values, images: imageUrls };
-  
+      console.log("formData, session", formData, session);
       // Dispatch Redux action to add car entry
-      await dispatch(addCarEntryRequest({ formData, session }));
-  
-      // Reset form and image list
-      form.resetFields();
-      setImageList([]);
-      // Show success message
-      toast.success("Form submitted successfully!");
+      dispatch(addCarEntryRequest({ formData, session })).then((res) => {
+        console.log("res", res);
+        form.resetFields();
+        // Reset form and image list
+        setImageList([]);
+        // Show success message
+        toast.success("Form submitted successfully!");
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
       if (error.response && error.response.data) {
@@ -52,7 +52,6 @@ function CarForm() {
       setLoading(false); // Ensure loading state is set to false regardless of success or failure
     }
   };
-  
 
   const handleImageChange = ({ fileList }) => {
     setImageList(fileList);
@@ -69,6 +68,7 @@ function CarForm() {
         const downloadURL = await getDownloadURL(snapshot.ref);
         urls.push(downloadURL);
       }
+      console.log("urls", urls);
       return urls;
     } catch (error) {
       console.error("Error uploading images to Firebase:", error);

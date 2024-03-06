@@ -19,15 +19,11 @@ export const addCarEntryRequest = createAsyncThunk(
       let response;
       thunkAPI.dispatch(setLoading(true));
       response = await axios
-        .post(
-          `${baseURL}post`,
-          { payload },
-          {
-            headers: {
-              authorization: `Bearer ${token}`
-            },
-          }
-        )
+        .post(`${baseURL}post`, payload, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => response.data);
       thunkAPI.dispatch(setLoading(false));
       return response;
@@ -40,8 +36,7 @@ export const addCarEntryRequest = createAsyncThunk(
 const homeSlice = createSlice({
   name: "home",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(HYDRATE, (state, action) => {
       state.carData = action?.payload?.home?.carData
