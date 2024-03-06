@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/montserrat/Montserrat-Regular.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat-Alternate";
+  font-style: normal;
+  font-weight: 400;
+  src: url("/montserrat/MontserratAlternates-Regular.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat-Alternate";
+  font-style: normal;
+  font-weight: 600;
+  src: url("/montserrat/MontserratAlternates-SemiBold.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  src: url("/montserrat/Montserrat-Medium.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 600;
+  src: url("/montserrat/Montserrat-SemiBold.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700;
+  src: url("/montserrat/Montserrat-Bold.otf") format("truetype");
+}
+
+body {
+  font-family: "Montserrat" !important;
+  width: 100%;
+  overflow-x: hidden;
+}
+* {
+  font-family: "Montserrat" !important;
+}
+
+.containers {
+  width: 90% !important;
+  margin: auto !important;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.car-form .ant-form {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.ant-btn {
+  background: #4096ff !important;
+}
+
+.login-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-form-content {
+  width: 500px;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-form-button {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.login-form-button:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
