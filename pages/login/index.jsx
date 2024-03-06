@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Typography } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { signIn } from "next-auth/react";
+import { getSession, signIn } from "next-auth/react";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 import LoaderScreen from "@/components/loaderScreen";
@@ -90,5 +90,24 @@ function LoginForm() {
     </div>
   );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps(
+  store => async ({ req, res }) => {
+
+    const session = await getSession({ req });
+    if (session?.user?.token) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    return {
+      props: {},
+    };
+  }
+);
 
 export default LoginForm;
